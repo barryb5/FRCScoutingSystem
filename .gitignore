@@ -1,0 +1,39 @@
+/ScoutingServer/target/
+/ScoutingServer/!.mvn/wrapper/maven-wrapper.jar
+/ScoutingServer/!**/src/main/**/target/
+/ScoutingServer/!**/src/test/**/target/
+
+### IntelliJ IDEA ###
+ScoutingServer/.idea/*
+ScoutingServer/.idea/modules.xml
+ScoutingServer/.idea/jarRepositories.xml
+ScoutingServer/.idea/compiler.xml
+ScoutingServer/.idea/libraries/
+ScoutingServer/*.iws
+ScoutingServer/*.iml
+ScoutingServer/*.ipr
+
+### Eclipse ###
+/ScoutingServer/.apt_generated
+/ScoutingServer/.classpath
+/ScoutingServer/.factorypath
+/ScoutingServer/.project
+/ScoutingServer/.settings
+/ScoutingServer/.springBeans
+/ScoutingServer/.sts4-cache
+
+### NetBeans ###
+/ScoutingServer/nbproject/private/
+/ScoutingServer/nbbuild/
+/ScoutingServer/dist/
+/ScoutingServer/nbdist/
+/ScoutingServer/.nb-gradle/
+/ScoutingServer/build/
+/ScoutingServer/!**/src/main/**/build/
+/ScoutingServer/!**/src/test/**/build/
+
+### VS Code ###
+/ScoutingServer/.vscode/
+
+### Mac OS ###
+/ScoutingServer/.DS_Store
