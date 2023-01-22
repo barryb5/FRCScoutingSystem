@@ -1,23 +1,20 @@
 package com.company.manager;
 
-import com.company.services.APITournament;
+import com.company.generated.APITeam;
+import com.company.generated.APITournament;
 import com.company.services.StandardResponse;
-import com.company.services.APITeam;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Context;
-import io.javalin.http.Header;
 import io.javalin.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.HttpResponse;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -44,14 +41,14 @@ public class ResetAndPopulate {
 
             statement.addBatch("PRAGMA foreign_keys = 0");
 
-//            statement.addBatch("DROP TABLE IF EXISTS teams");
+            statement.addBatch("DROP TABLE IF EXISTS teams");
             statement.addBatch("DROP TABLE IF EXISTS tournaments");
             statement.addBatch("DROP TABLE IF EXISTS matches");
             statement.addBatch("DROP TABLE IF EXISTS data");
             statement.addBatch("DROP TABLE IF EXISTS scouters");
 
 
-//            statement.addBatch("CREATE TABLE teams(key TEXT ONLY PRIMARY KEY, teamNumber INTEGER, teamName TEXT ONLY, UNIQUE (key, teamNumber, teamName))");
+            statement.addBatch("CREATE TABLE teams(key TEXT ONLY PRIMARY KEY, teamNumber INTEGER, teamName TEXT ONLY, UNIQUE (key, teamNumber, teamName))");
             statement.addBatch("CREATE TABLE tournaments (key TEXT ONLY PRIMARY KEY, name TEXT ONLY, location VARCHAR(50), date TEXT ONLY VARCHAR(20), UNIQUE (key, date))");
             statement.addBatch("CREATE TABLE matches (key PRIMARY KEY, tournamentKey TEXT ONLY NOT NULL, matchNumber INTEGER, teamKey TEXT ONLY, matchType TEXT ONLY NOT NULL, UNIQUE (tournamentKey, teamKey, matchType, matchNumber), FOREIGN KEY(tournamentKey) REFERENCES tournaments(key), FOREIGN KEY(teamKey) REFERENCES teams(key))");
             statement.addBatch("CREATE TABLE data (" +
@@ -69,7 +66,7 @@ public class ResetAndPopulate {
                     "            phoneNumber INTEGER," +
                     "            email VARCHAR(100)," +
                     "            UNIQUE (name))");
-            statement.addBatch("PRAGMA foreign_keys = 1");
+//            statement.addBatch("PRAGMA foreign_keys = 1");
 
             statement.executeBatch();
 
@@ -81,8 +78,8 @@ public class ResetAndPopulate {
             HttpGet getRequest = new HttpGet();
             getRequest.addHeader("X-TBA-Auth-Key", properties.getProperty("tbaKey"));
 
-            /*
-            for (int i = 0; i < 18; i++) {
+
+            for (int i = 0; i < 1; i++) {
                 getRequest.setURI(URI.create(url + "/teams/" + i + "/simple"));
 
                 HttpResponse apiResponse = httpClient.execute(getRequest);
@@ -97,7 +94,7 @@ public class ResetAndPopulate {
 
                 System.out.println(((i+1)/18.0)*100 + "% Complete");
             }
-            */
+
 
             for (int i = 2022; i < 2024; i++) {
                 getRequest.setURI(URI.create(url + "/events/" + i + "/simple"));
@@ -109,7 +106,7 @@ public class ResetAndPopulate {
                 // Would use a lambda except it would require another try catch for the same exception, so I didn't
                 for (APITournament tournament : tournaments) {
 //                    System.out.println("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
-                    statement.execute("INSERT INTO tournaments (key, name, location, date) VALUES('" + tournament.getKey() + "', " + tournament.getName().replaceAll("'", "''") + ", '" + tournament.getCity().replaceAll("'", "''") + "', '" + tournament.getStartDate().replaceAll("'", "''") + "')");
+                    statement.execute("INSERT INTO tournaments (key, name, location, date) VALUES('" + tournament.getKey() + "', '" + tournament.getName().replaceAll("'", "''") + "', '" + tournament.getCity().replaceAll("'", "''") + "', '" + tournament.getStartDate().replaceAll("'", "''") + "')");
                 }
 
                 System.out.println(i + " Complete");

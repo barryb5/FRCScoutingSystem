@@ -1,4 +1,4 @@
-package com.company.services;
+package com.company.generated;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
