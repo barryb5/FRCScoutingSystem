@@ -37,3 +37,5 @@ ScoutingServer/*.ipr
 
 ### Mac OS ###
 /ScoutingServer/.DS_Store
+
+ScoutingServer/src/main/resources/config.properties

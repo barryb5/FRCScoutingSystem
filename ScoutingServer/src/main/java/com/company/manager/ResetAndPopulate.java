@@ -1,14 +1,30 @@
 package com.company.manager;
 
 import com.company.services.StandardResponse;
+import com.company.services.APITeam;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Context;
+import io.javalin.http.Header;
 import io.javalin.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.HttpResponse;
 
-import java.sql.PreparedStatement;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.List;
+import java.util.Properties;
+
 import static com.company.manager.Manager.db;
+import static java.lang.Thread.sleep;
 
 public class ResetAndPopulate {
     public static final String name = "resetAndPopulate";
@@ -18,6 +34,8 @@ public class ResetAndPopulate {
 
     public StandardResponse runTask(Context ctx) {
         StandardResponse response = new StandardResponse();
+
+        String url = "https://www.thebluealliance.com/api/v3";
 
         try {
             Statement statement = db.createStatement();
@@ -54,11 +72,36 @@ public class ResetAndPopulate {
 
             statement.executeBatch();
 
+            InputStream input = new FileInputStream("src/main/resources/config.properties");
+            Properties properties = new Properties();
+            properties.load(input);
+
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet getRequest = new HttpGet();
+            getRequest.addHeader("X-TBA-Auth-Key", properties.getProperty("tbaKey"));
+
+            for (int i = 0; i < 18; i++) {
+                getRequest.setURI(URI.create(url + "/teams/" + i + "/simple"));
+
+                HttpResponse apiResponse = httpClient.execute(getRequest);
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<APITeam> teams = objectMapper.readValue(apiResponse.getEntity().getContent(), new TypeReference<List<APITeam>>(){});
+
+                // Would use a lambda except it would require another try catch for the same exception, so I didn't
+                for (APITeam team : teams) {
+                    System.out.println("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
+                    statement.execute("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
+                }
+
+//                statement.executeBatch();
+                System.out.println(((i+1)/18.0)*100 + "% Complete");
+            }
+
             response.status = HttpStatus.OK;
             response.textResponse = "Success";
 
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;
             response.textResponse = e.getClass().getName() + ": " + e.getMessage();

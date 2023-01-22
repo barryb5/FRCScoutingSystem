@@ -25,9 +25,9 @@ public class Main
         app.get("/manager/{task}", ctx -> {
             StandardResponse response = databaseManager.runGetTask(ctx);
             System.out.println(ctx.path());
-            ctx.result("asdf");
-//            ctx.result(response.jsonResponse());
-//            ctx.status(response.getStatus());
+//            ctx.result("asdf");
+            ctx.json(response);
+            ctx.status(response.status);
         });
 
         app.post("/manager/{task}", ctx -> {
