@@ -24,14 +24,16 @@ public class Main
 
         app.get("/manager/{task}", ctx -> {
             StandardResponse response = databaseManager.runGetTask(ctx);
-            ctx.result(response.jsonResponse());
-            ctx.status(response.getStatus());
+            System.out.println(ctx.path());
+            ctx.result("asdf");
+//            ctx.result(response.jsonResponse());
+//            ctx.status(response.getStatus());
         });
 
         app.post("/manager/{task}", ctx -> {
             StandardResponse response = databaseManager.runPostTask(ctx);
-            ctx.result(response.jsonResponse());
-            ctx.status(response.getStatus());
+            ctx.json(response);
+            ctx.status(response.status);
         });
 
     }
