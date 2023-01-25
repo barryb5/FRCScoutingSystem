@@ -2,11 +2,13 @@ package com.company.manager;
 
 import com.company.generated.APITeam;
 import com.company.generated.APITournament;
+import com.company.generated.Scouter;
 import com.company.services.StandardResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.HttpResponse;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.Properties;
 
 import static com.company.manager.Manager.db;
-import static java.lang.Thread.sleep;
 
 public class ResetAndPopulate {
     public static final String name = "resetAndPopulate";
@@ -30,7 +31,7 @@ public class ResetAndPopulate {
 
     }
 
-    public StandardResponse runTask(Context ctx) {
+    public StandardResponse runTask() {
         StandardResponse response = new StandardResponse();
 
         String url = "https://www.thebluealliance.com/api/v3";
@@ -66,7 +67,6 @@ public class ResetAndPopulate {
                     "            phoneNumber INTEGER," +
                     "            email VARCHAR(100)," +
                     "            UNIQUE (name))");
-//            statement.addBatch("PRAGMA foreign_keys = 1");
 
             statement.executeBatch();
 
@@ -78,12 +78,12 @@ public class ResetAndPopulate {
             HttpGet getRequest = new HttpGet();
             getRequest.addHeader("X-TBA-Auth-Key", properties.getProperty("tbaKey"));
 
+            ObjectMapper objectMapper = new ObjectMapper();
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 18; i++) {
                 getRequest.setURI(URI.create(url + "/teams/" + i + "/simple"));
 
                 HttpResponse apiResponse = httpClient.execute(getRequest);
-                ObjectMapper objectMapper = new ObjectMapper();
                 List<APITeam> teams = objectMapper.readValue(apiResponse.getEntity().getContent(), new TypeReference<List<APITeam>>(){});
 
                 // Would use a lambda except it would require another try catch for the same exception, so I didn't
@@ -100,22 +100,30 @@ public class ResetAndPopulate {
                 getRequest.setURI(URI.create(url + "/events/" + i + "/simple"));
 
                 HttpResponse apiResponse = httpClient.execute(getRequest);
-                ObjectMapper objectMapper = new ObjectMapper();
                 List<APITournament> tournaments = objectMapper.readValue(apiResponse.getEntity().getContent(), new TypeReference<List<APITournament>>(){});
 
                 // Would use a lambda except it would require another try catch for the same exception, so I didn't
                 for (APITournament tournament : tournaments) {
-//                    System.out.println("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
                     statement.execute("INSERT INTO tournaments (key, name, location, date) VALUES('" + tournament.getKey() + "', '" + tournament.getName().replaceAll("'", "''") + "', '" + tournament.getCity().replaceAll("'", "''") + "', '" + tournament.getStartDate().replaceAll("'", "''") + "')");
                 }
 
                 System.out.println(i + " Complete");
             }
 
+            // Reads scouters file from resources and converts it to bytearray which converts it into a list of scouter objects
+            List<Scouter> scouters = objectMapper.readValue(IOUtils.toByteArray(new FileInputStream("src/main/resources/scouters.json")), new TypeReference<List<Scouter>>(){});
+
+            for (Scouter scouter : scouters) {
+//                System.out.println(scouter);
+                statement.execute("INSERT INTO scouters (name, phoneNumber, email) VALUES ('" + scouter.getName() + "', " + scouter.getNumber() + ", '" + scouter.getEmail() + "')");
+            }
+
+            System.out.println("Scouters Complete");
+
+            statement.execute("PRAGMA foreign_keys = 1");
+
             response.status = HttpStatus.OK;
             response.textResponse = "Success";
-
-
         } catch (SQLException | IOException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;

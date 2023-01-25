@@ -23,7 +23,7 @@ public class Main
 
 
         app.get("/manager/{task}", ctx -> {
-            StandardResponse response = databaseManager.runGetTask(ctx);
+            StandardResponse response = databaseManager.runTask(ctx);
             System.out.println(ctx.path());
 //            ctx.result("asdf");
             ctx.json(response);
@@ -31,7 +31,7 @@ public class Main
         });
 
         app.post("/manager/{task}", ctx -> {
-            StandardResponse response = databaseManager.runPostTask(ctx);
+            StandardResponse response = databaseManager.runTask(ctx);
             ctx.json(response);
             ctx.status(response.status);
         });
