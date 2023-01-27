@@ -3,6 +3,8 @@ package com.company;
 import com.company.services.StandardResponse;
 import io.javalin.Javalin;
 import io.javalin.Javalin.*;
+import io.javalin.http.HttpStatus;
+
 /**
  * Hello world!
  *
@@ -25,8 +27,12 @@ public class Main
         app.get("/manager/{task}", ctx -> {
             StandardResponse response = databaseManager.runTask(ctx);
             System.out.println(ctx.path());
-//            ctx.result("asdf");
-            ctx.json(response);
+            if (response.status == HttpStatus.OK) {
+                ctx.result(response.results);
+            } else {
+                ctx.json(response);
+            }
+
             ctx.status(response.status);
         });
 

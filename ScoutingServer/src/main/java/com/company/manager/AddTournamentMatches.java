@@ -21,9 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.company.manager.Manager.db;
 
-public class AddTournamentMatches {
+public class AddTournamentMatches extends Manager {
     public static final String name = "addTournamentMatches";
     public AddTournamentMatches() {
 
