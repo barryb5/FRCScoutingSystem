@@ -10,10 +10,11 @@ import java.sql.Statement;
 
 public class GetMatches extends Manager {
     public static final String name = "getMatches";
+    private String tournamentKey;
 
     public StandardResponse runTask(Context ctx) {
         StandardResponse response = new StandardResponse();
-        String tournamentKey = ctx.queryParam("tournamentKey");
+        tournamentKey = ctx.queryParam("tournamentKey");
 
         try {
             Statement statement = db.createStatement();
