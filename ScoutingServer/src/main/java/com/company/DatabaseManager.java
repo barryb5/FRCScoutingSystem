@@ -1,8 +1,6 @@
 package com.company;
 
-import com.company.manager.AddTournamentMatches;
-import com.company.manager.GetMatches;
-import com.company.manager.ResetAndPopulate;
+import com.company.manager.*;
 import com.company.services.StandardResponse;
 import io.javalin.http.Context;
 
@@ -17,6 +15,10 @@ public class DatabaseManager {
                 return new AddTournamentMatches().runTask(ctx);
             case(GetMatches.name):
                 return new GetMatches().runTask(ctx);
+            case(GetAllNotes.name):
+                return new GetAllNotes().runTask(ctx);
+            case(AddScoutReport.name):
+                return new AddScoutReport().runTask(ctx);
             default:
                 // Task was missing
                 return new StandardResponse();

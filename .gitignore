@@ -4,6 +4,7 @@
 /ScoutingServer/!**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+ScoutingServer/.idea
 ScoutingServer/.idea/*
 ScoutingServer/.idea/modules.xml
 ScoutingServer/.idea/jarRepositories.xml
