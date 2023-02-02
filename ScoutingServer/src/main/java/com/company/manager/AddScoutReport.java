@@ -3,6 +3,7 @@ package com.company.manager;
 import com.company.generated.GameDependent;
 import com.company.generated.ScoutReport;
 import com.company.services.StandardResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Context;
@@ -27,9 +28,10 @@ public class AddScoutReport extends Manager {
             scoutReport = objectMapper.readValue(ctx.bodyAsBytes(), new TypeReference<ScoutReport>(){});
             gameDependent = new GameDependent();
             gameDependent.setEvents(scoutReport.getEvents());
-            gameDependent.setAutoChallengeResult(gameDependent.getAutoChallengeResult());
-            gameDependent.setChallengeResult(gameDependent.getChallengeResult());
-            gameDependent.setRobotRole(gameDependent.getRobotRole());
+            gameDependent.setAutoChallengeResult(scoutReport.getAutoChallengeResult());
+            gameDependent.setChallengeResult(scoutReport.getChallengeResult());
+            gameDependent.setRobotRole(scoutReport.getRobotRole());
+            System.out.println(gameDependent.toString());
         } catch (IOException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -72,14 +74,14 @@ public class AddScoutReport extends Manager {
                     "'" + scoutReport.getMatchKey() + "', " +
                     "'" + scoutReport.getScouterName() + "', " +
                     scoutReport.getStartTime() + ", " +
-                    "'" + gameDependent.toString() + "', " +
+                    "'" + objectMapper.writeValueAsString(gameDependent) + "', " +
                     "'" + scoutReport.getNotes() + "'" +
                     ")");
 
             response.status = HttpStatus.OK;
-            response.textResponse = "Success";
+            response.results = "Success";
 
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;
             response.textResponse = e.getClass().getName() + ": " + e.getMessage();
