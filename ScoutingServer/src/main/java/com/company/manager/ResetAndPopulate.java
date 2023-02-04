@@ -86,7 +86,7 @@ public class ResetAndPopulate extends Manager {
                 // Would use a lambda except it would require another try catch for the same exception, so I didn't
                 for (APITeam team : teams) {
 //                    System.out.println("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
-                    statement.execute("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getName().replaceAll("'", "''") + "')");
+                    statement.execute("INSERT INTO teams (key, teamNumber, teamName) VALUES ('" + team.getKey() + "', " + team.getTeamNumber() + ", '" + team.getNickname().replaceAll("'", "''") + "')");
                 }
 
                 System.out.println(((i+1)/18.0)*100 + "% Complete");
@@ -120,7 +120,7 @@ public class ResetAndPopulate extends Manager {
             statement.execute("PRAGMA foreign_keys = 1");
 
             response.status = HttpStatus.OK;
-            response.textResponse = "Success";
+            response.results = "Success";
         } catch (SQLException | IOException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;

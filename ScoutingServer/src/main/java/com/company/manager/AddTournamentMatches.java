@@ -102,7 +102,7 @@ public class AddTournamentMatches extends Manager {
             }
 
             response.status = HttpStatus.OK;
-            response.textResponse = "Success";
+            response.results = "Success";
         } catch (SQLException | IOException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;
