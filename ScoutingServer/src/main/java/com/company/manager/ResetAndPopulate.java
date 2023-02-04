@@ -25,11 +25,8 @@ import java.util.Properties;
 
 import static com.company.manager.Manager.db;
 
-public class ResetAndPopulate {
+public class ResetAndPopulate extends Manager {
     public static final String name = "resetAndPopulate";
-    public ResetAndPopulate() {
-
-    }
 
     public StandardResponse runTask() {
         StandardResponse response = new StandardResponse();

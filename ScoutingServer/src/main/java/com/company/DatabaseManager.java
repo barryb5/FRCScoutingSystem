@@ -19,6 +19,8 @@ public class DatabaseManager {
                 return new GetAllNotes().runTask(ctx);
             case(AddScoutReport.name):
                 return new AddScoutReport().runTask(ctx);
+            case(GetScouters.name):
+                return new GetScouters().runTask();
             default:
                 // Task was missing
                 return new StandardResponse();
