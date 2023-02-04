@@ -21,6 +21,8 @@ public class DatabaseManager {
                 return new AddScoutReport().runTask(ctx);
             case(GetScouters.name):
                 return new GetScouters().runTask();
+            case(GetTeams.name):
+                return new GetTeams().runTask();
             default:
                 // Task was missing
                 return new StandardResponse();
