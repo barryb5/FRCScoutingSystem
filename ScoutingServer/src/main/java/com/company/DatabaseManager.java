@@ -23,6 +23,8 @@ public class DatabaseManager {
                 return new GetScouters().runTask();
             case(GetTeams.name):
                 return new GetTeams().runTask();
+            case(GetTeamsInTournament.name):
+                return new GetTeamsInTournament().runTask(ctx);
             default:
                 // Task was missing
                 return new StandardResponse();
