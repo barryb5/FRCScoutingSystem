@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -58,6 +59,10 @@ public class Manager {
     static {
         try {
             db = DriverManager.getConnection("jdbc:sqlite:test.db");
+
+            // Turns foreign keys on just in case
+            Statement statement = db.createStatement();
+            statement.execute("PRAGMA foreign_keys = 1");
         } catch (SQLException e) {
             System.out.println("Manager error");
             throw new RuntimeException(e);

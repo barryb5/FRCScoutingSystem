@@ -31,10 +31,10 @@ public class GetScouters extends Manager {
                 returnScouters.add(scouters.getString("name"));
             }
 
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();
 
             response.status = HttpStatus.OK;
-            response.results = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(returnScouters);
+            response.results = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(returnScouters);
         } catch (SQLException | JsonProcessingException e) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
             response.status = HttpStatus.INTERNAL_SERVER_ERROR;

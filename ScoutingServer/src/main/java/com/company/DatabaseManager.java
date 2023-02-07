@@ -25,6 +25,8 @@ public class DatabaseManager {
                 return new GetTeams().runTask();
             case(GetTeamsInTournament.name):
                 return new GetTeamsInTournament().runTask(ctx);
+            case(IsMatchesScouted.name):
+                return new IsMatchesScouted().runTask(ctx);
             default:
                 // Task was missing
                 return new StandardResponse();
